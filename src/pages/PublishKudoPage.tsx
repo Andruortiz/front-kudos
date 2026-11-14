@@ -1,13 +1,16 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../api/client'
+import { listCategories } from '../api/categories'
 import { publishKudo } from '../api/kudos'
-import type { PublishKudoResponse } from '../api/types'
+import type { Category, PublishKudoResponse, Recipient } from '../api/types'
+import RecipientPicker from '../components/RecipientPicker'
 import { validateAttachments } from '../kudos/attachmentRules'
 
 export default function PublishKudoPage() {
-  const [recipientId, setRecipientId] = useState('')
+  const [recipient, setRecipient] = useState<Recipient | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
   const [categoryId, setCategoryId] = useState('')
   const [content, setContent] = useState('')
   const [files, setFiles] = useState<File[]>([])
@@ -16,8 +19,18 @@ export default function PublishKudoPage() {
   const [published, setPublished] = useState<PublishKudoResponse | null>(null)
   const idempotencyKey = useRef(crypto.randomUUID())
 
+  useEffect(() => {
+    listCategories()
+      .then(setCategories)
+      .catch((e) => setError(e instanceof ApiError ? e.message : 'No se pudieron cargar las categorías'))
+  }, [])
+
   async function submit(event: FormEvent) {
     event.preventDefault()
+    if (!recipient) {
+      setError('Elige un destinatario')
+      return
+    }
     const attachmentError = validateAttachments(files)
     if (attachmentError) {
       setError(attachmentError)
@@ -26,7 +39,11 @@ export default function PublishKudoPage() {
     setError(null)
     setSending(true)
     try {
-      const response = await publishKudo({ recipientId, categoryId, content }, files, idempotencyKey.current)
+      const response = await publishKudo(
+        { recipientId: recipient.id, categoryId, content },
+        files,
+        idempotencyKey.current,
+      )
       setPublished(response)
       idempotencyKey.current = crypto.randomUUID()
     } catch (e) {
@@ -56,13 +73,17 @@ export default function PublishKudoPage() {
     <main>
       <h1>Enviar Kudo</h1>
       <form onSubmit={submit}>
-        <label>
-          Destinatario
-          <input value={recipientId} onChange={(e) => setRecipientId(e.target.value)} required />
-        </label>
+        <RecipientPicker selected={recipient} onSelect={setRecipient} />
         <label>
           Categoría
-          <input value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required />
+          <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
+            <option value="">Elige una categoría</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           Mensaje
