@@ -3,6 +3,8 @@ import type { ErrorBody } from './types'
 
 export const API_URL: string = import.meta.env.VITE_API_URL ?? 'http://localhost:8080'
 
+const DEV_USER_ID: string | undefined = import.meta.env.VITE_DEV_USER_ID
+
 export class ApiError extends Error {
   readonly status: number
   readonly code: string
@@ -14,11 +16,29 @@ export class ApiError extends Error {
   }
 }
 
+/** Only for answers without a body, such as a proxy or a gateway error; the API itself always sends {code, message}. */
+function fallbackMessage(status: number): string {
+  if (status === 401) {
+    return 'Tu sesión no es válida o expiró. Vuelve a iniciar sesión'
+  }
+  if (status === 403) {
+    return 'No tienes permiso para hacer esto'
+  }
+  if (status >= 500) {
+    return 'El servidor tuvo un problema. Inténtalo de nuevo en un momento'
+  }
+  return 'Ocurrió un error inesperado'
+}
+
 export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers = new Headers(init.headers)
-  const token = getToken()
+  const token = await getToken()
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
+  }
+  // shortcut: solo desarrollo, el backend local lo lee en lugar del login real; quitar con Entra
+  if (import.meta.env.DEV && DEV_USER_ID) {
+    headers.set('X-Dev-User', DEV_USER_ID)
   }
   let response: Response
   try {
@@ -28,7 +48,7 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   }
   if (!response.ok) {
     const body = (await response.json().catch(() => null)) as ErrorBody | null
-    throw new ApiError(response.status, body?.code ?? 'unknown', body?.message ?? 'Ocurrió un error inesperado')
+    throw new ApiError(response.status, body?.code ?? 'unknown', body?.message ?? fallbackMessage(response.status))
   }
   return (await response.json()) as T
 }

@@ -1,21 +1,12 @@
-const KEY = 'kudos.token'
+type TokenProvider = () => Promise<string | null>
 
-export function getToken(): string | null {
-  try {
-    return sessionStorage.getItem(KEY)
-  } catch {
-    return null
-  }
+let provider: TokenProvider = async () => null
+
+/** Who gives the access token: Microsoft Entra in real use, nobody in local development with X-Dev-User. */
+export function setTokenProvider(next: TokenProvider): void {
+  provider = next
 }
 
-export function setToken(token: string | null): void {
-  try {
-    if (token) {
-      sessionStorage.setItem(KEY, token)
-    } else {
-      sessionStorage.removeItem(KEY)
-    }
-  } catch {
-    return
-  }
+export function getToken(): Promise<string | null> {
+  return provider()
 }

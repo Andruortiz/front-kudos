@@ -58,12 +58,60 @@ export interface ListCategoriesResponse {
 export interface Kudo {
     id: string
     authorId: string
+    authorName: string | null
     recipientId: string
+    recipientName: string | null
     categoryId: string
+    categoryName: string | null
     content: string
     createdAt: string
 }
 
 export interface ListKudosResponse {
   items: Kudo[]
+}
+
+export type UserStatus = 'PENDING_VERIFICATION' | 'ACTIVE'
+
+export interface Profile {
+    id: string
+    name: string
+    email: string
+    phone: string | null
+    phoneVerified: boolean
+    role: Role
+    status: UserStatus
+}
+
+export interface AttachmentInfo {
+  name: string
+  contentType: string
+  size: number
+}
+
+export interface KudoDetail {
+  id: string
+  authorId: string
+  authorName: string | null
+  recipientId: string
+  recipientName: string | null
+  categoryId: string
+  categoryName: string | null
+  content: string
+  createdAt: string
+  attachments: AttachmentInfo[]
+}
+
+export type SelfRegistrationRole = "STUDENT" | "TEACHER"
+
+export interface RegistrationRequest {
+  name: string
+  email: string
+  phone: string
+  role: SelfRegistrationRole
+}
+
+export interface RegistrationResponse {
+  id: string
+  status: "PENDING" | "APPROVED" | "REJECTED"
 }

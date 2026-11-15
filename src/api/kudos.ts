@@ -1,5 +1,5 @@
 import { apiFetch } from './client'
-import type { Kudo, ListKudosResponse, PublishKudoRequest, PublishKudoResponse } from './types'
+import type { Kudo, KudoDetail, ListKudosResponse, PublishKudoRequest, PublishKudoResponse } from './types'
 
 export function publishKudo(
   request: PublishKudoRequest,
@@ -26,4 +26,8 @@ export async function listKudos(type: KudoType, categoryId?: string): Promise<Ku
   }
   const response = await apiFetch<ListKudosResponse>(`/api/v1/kudos?${params}`)
   return response.items
+}
+
+export function getKudo(id: string): Promise<KudoDetail> {
+  return apiFetch<KudoDetail>(`/api/v1/kudos/${encodeURIComponent(id)}`)
 }
