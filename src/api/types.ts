@@ -53,3 +53,17 @@ export interface Category {
 export interface ListCategoriesResponse {
   items: Category[]
 }
+
+
+export interface Kudo {
+    id: string
+    authorId: string
+    recipientId: string
+    categoryId: string
+    content: string
+    createdAt: string
+}
+
+export interface ListKudosResponse {
+  items: Kudo[]
+}

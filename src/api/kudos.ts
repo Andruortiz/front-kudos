@@ -1,5 +1,5 @@
 import { apiFetch } from './client'
-import type { PublishKudoRequest, PublishKudoResponse } from './types'
+import type { Kudo, ListKudosResponse, PublishKudoRequest, PublishKudoResponse } from './types'
 
 export function publishKudo(
   request: PublishKudoRequest,
@@ -14,4 +14,16 @@ export function publishKudo(
     headers: { 'Idempotency-Key': idempotencyKey },
     body,
   })
+
+}
+
+export type KudoType = 'SENT' | 'RECEIVED' | 'ALL'
+
+export async function listKudos(type: KudoType, categoryId?: string): Promise<Kudo[]> {
+  const params = new URLSearchParams({ type })
+  if (categoryId) {
+    params.set('categoryId', categoryId)
+  }
+  const response = await apiFetch<ListKudosResponse>(`/api/v1/kudos?${params}`)
+  return response.items
 }
