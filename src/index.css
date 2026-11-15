@@ -1,81 +1,144 @@
-:root {
-  font-family: system-ui, sans-serif;
-  color-scheme: light dark;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
+  background-color: #121212;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
 }
 
-main {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-form {
-  display: grid;
-  gap: 1rem;
-}
-
-label {
-  display: grid;
-  gap: 0.25rem;
-}
-
-input,
-textarea,
-button {
-  font: inherit;
-  padding: 0.6rem;
-  min-height: 2.75rem;
-  box-sizing: border-box;
-}
-
-
-/* Espacio inferior para que la barra no tape el final de tus páginas */
+/* ==========================================
+   1. MÓVIL (< 768px): Barra inferior + Salir arriba
+   ========================================== */
 .page-content {
-  padding-bottom: 75px;
+  padding: 20px;
+  padding-top: 68px;    /* Espacio arriba para que no tape el botón Salir */
+  padding-bottom: 80px; /* Espacio abajo para que no tape la barra inferior */
 }
 
-/* Barra fija inferior */
 .bottom-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 64px;
   background-color: #18181b;
   border-top: 1px solid #27272a;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  padding: 0 6px;
   z-index: 1000;
 }
 
-/* Estilo base de los enlaces/botones */
-.nav-btn {
+/* Botón Salir flotando arriba a la derecha en móvil */
+.bottom-LOG {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  height: 40px;
+  padding: 0 14px;
+  background-color: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+}
+
+.sidebar-logo {
+  display: none;
+}
+
+.nav-btn,
+.nav-bottom-item {
   text-decoration: none;
   color: #a1a1aa;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
-  padding: 8px 14px;
+  padding: 8px 10px;
   border-radius: 8px;
+  text-align: center;
+  white-space: nowrap;
   transition: background-color 0.2s, color 0.2s;
 }
 
-.nav-btn:hover {
+.nav-btn:hover,
+.nav-bottom-item:hover {
   color: #ffffff;
   background-color: #27272a;
 }
 
-/* Estilo automático cuando estás en esa ruta */
-.nav-btn.active {
+.nav-btn.active,
+.nav-bottom-item.active {
   color: #ffffff;
   background-color: #2563eb;
 }
 
+/* ==========================================
+   2. PC / WEB (>= 768px): Barra lateral + Salir al fondo
+   ========================================== */
+@media (min-width: 768px) {
+  .bottom-bar {
+    top: 0;
+    bottom: auto;
+    width: 230px;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 8px;
+    padding: 24px 16px 84px 16px; /* Deja espacio abajo para Salir */
+    border-top: none;
+    border-right: 1px solid #27272a;
+  }
 
-[role='alert'] {
-  color: #b00020;
+  .sidebar-logo {
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    color: #ffffff;
+    padding: 0 12px 20px 12px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #27272a;
+  }
+
+  .nav-btn {
+    font-size: 15px;
+    text-align: left;
+    padding: 12px 16px;
+  }
+
+  /* Mueve Salir al fondo de la barra lateral izquierda */
+  .bottom-LOG {
+    top: auto;
+    right: auto;
+    bottom: 0;
+    left: 0;
+    width: 230px; /* Mismo ancho que .bottom-bar */
+    height: auto;
+    padding: 16px;
+    border: none;
+    border-top: 1px solid #27272a;
+    border-right: 1px solid #27272a;
+    border-radius: 0;
+    justify-content: stretch;
+  }
+
+  .nav-bottom-item {
+    display: block;
+    width: 100%;
+    font-size: 15px;
+    text-align: left;
+    padding: 12px 16px;
+  }
+
+  .page-content {
+    margin-left: 230px;
+    padding: 32px;
+  }
 }
