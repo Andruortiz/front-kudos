@@ -32,6 +32,50 @@ button {
   box-sizing: border-box;
 }
 
+
+/* Espacio inferior para que la barra no tape el final de tus páginas */
+.page-content {
+  padding-bottom: 75px;
+}
+
+/* Barra fija inferior */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #18181b;
+  border-top: 1px solid #27272a;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Estilo base de los enlaces/botones */
+.nav-btn {
+  text-decoration: none;
+  color: #a1a1aa;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-btn:hover {
+  color: #ffffff;
+  background-color: #27272a;
+}
+
+/* Estilo automático cuando estás en esa ruta */
+.nav-btn.active {
+  color: #ffffff;
+  background-color: #2563eb;
+}
+
+
 [role='alert'] {
   color: #b00020;
 }
