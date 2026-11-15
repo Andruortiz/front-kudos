@@ -6,5 +6,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: './src/setupTests.ts',
+    // the tests must not depend on the developer's .env: no Entra login and no dev user
+    env: { VITE_ENTRA_TENANT_ID: '', VITE_ENTRA_CLIENT_ID: '', VITE_DEV_USER_ID: '' },
   },
 })

@@ -142,3 +142,403 @@ body {
     padding: 32px;
   }
 }
+
+/* ==========================================
+   3. DISEÑO COMPARTIDO (tema oscuro)
+   ========================================== */
+:root {
+  --bg: #121212;
+  --surface: #18181b;
+  --surface-2: #1f1f23;
+  --border: #27272a;
+  --text: #ffffff;
+  --muted: #a1a1aa;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.16);
+  --danger: #f87171;
+  --ok: #34d399;
+  --radius: 14px;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+h1 {
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.15rem;
+}
+
+a {
+  color: #60a5fa;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Formularios */
+form {
+  display: grid;
+  gap: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  font: inherit;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 12px;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* Botones */
+button,
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 11px 18px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+button:hover:not(:disabled),
+.btn:hover {
+  background: #27272a;
+}
+
+button[type='submit'],
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+button[type='submit']:hover:not(:disabled),
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.nav-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  font-weight: 500;
+  color: #a1a1aa;
+}
+
+/* Avisos */
+[role='alert'] {
+  color: var(--danger);
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+[role='status'] {
+  color: var(--ok);
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+
+/* Insignia y avatar */
+.chip {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #93c5fd;
+  background: var(--accent-soft);
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+}
+
+/* Tarjetas de Kudos */
+.kudo-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+.kudo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.kudo-card:hover {
+  border-color: #3f3f46;
+  transform: translateY(-1px);
+}
+
+.kudo-card__link {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.kudo-card__top,
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kudo-card__top {
+  justify-content: space-between;
+}
+
+.kudo-card__content {
+  color: #e4e4e7;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.empty {
+  text-align: center;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 32px 16px;
+}
+
+/* Detalle del Kudo */
+.kudo-detail {
+  display: grid;
+  gap: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px;
+}
+
+.kudo-detail__people {
+  display: grid;
+  gap: 10px;
+}
+
+.kudo-detail__content {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  border-left: 3px solid var(--accent);
+  padding-left: 14px;
+  white-space: pre-wrap;
+}
+
+.attachments {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.attachments li {
+  font-size: 0.85rem;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tabs a {
+  text-decoration: none;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+.tabs a.active {
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Inicio y tarjetas de acceso */
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.quick-link {
+  display: grid;
+  gap: 4px;
+  text-decoration: none;
+  color: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.quick-link:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.quick-link strong {
+  font-size: 1.05rem;
+}
+
+.quick-link span {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+/* Páginas públicas: inicio y registro */
+.public-page {
+  min-height: 100vh;
+  padding: 24px 20px 48px;
+  background: radial-gradient(900px 420px at 50% -10%, rgba(37, 99, 235, 0.22), transparent 70%), var(--bg);
+}
+
+.public-page main {
+  max-width: 880px;
+  gap: 32px;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+}
+
+.hero {
+  display: grid;
+  gap: 16px;
+  padding: 40px 0 8px;
+  text-align: center;
+  justify-items: center;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+}
+
+.hero__tagline {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.feature {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: grid;
+  gap: 6px;
+}
+
+.feature p {
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.92rem;
+}
+
+.form-page {
+  max-width: 520px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+a.brand {
+  color: inherit;
+  text-decoration: none;
+}
