@@ -1,0 +1,94 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Public values, not secrets. Vite embeds them when it builds, so they have to be here and not in Azure.
+  VITE_API_URL: https://ca-ucokudos-api.calmmeadow-fd0780b8.centralus.azurecontainerapps.io
+  VITE_ENTRA_TENANT_ID: 36f84d3d-a9fa-4302-8430-a675907c034d
+  VITE_ENTRA_CLIENT_ID: 4acf7f6e-4bdc-4547-aa3f-2ebaa7cb48e6
+  SITE_URL: https://agreeable-sea-085bc7f10.6.azurestaticapps.net
+
+jobs:
+  build:
+    name: Build, test and Trivy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Trivy dependency and secret scan
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln,secret
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: 1
+
+      - name: Build
+        run: npm run build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          if-no-files-found: error
+
+  deploy:
+    name: Deploy to Azure Static Web Apps
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: site
+          path: dist
+
+      - name: Publish
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          # the site is already built by the previous job
+          app_location: dist
+          skip_app_build: true
+          skip_api_build: true
+
+      # a deep link must open the app and not a 404, which proves staticwebapp.config.json is in place
+      - name: Check the site
+        run: |
+          for path in / /kudos/abc /perfil; do
+            for attempt in 1 2 3 4 5 6; do
+              code=$(curl -s -o /dev/null -w "%{http_code}" "$SITE_URL$path" || true)
+              [ "$code" = "200" ] && break
+              sleep 10
+            done
+            echo "$path -> $code"
+            [ "$code" = "200" ] || exit 1
+          done
