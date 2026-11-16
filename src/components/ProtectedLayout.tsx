@@ -8,29 +8,31 @@ import SessionGate from './SessionGate'
 function Shell() {
   return (
     <div className="app-layout">
+      <header className="topbar">
+        <span className="topbar__brand">UCO Kudos</span>
+        <nav aria-label="Principal">
+          <NavLink to="/inicio" className="nav-btn">
+            Inicio
+          </NavLink>
+          <NavLink to="/kudos/received" className="nav-btn">
+            Recibidos
+          </NavLink>
+          <NavLink to="/kudos/sent" className="nav-btn">
+            Enviados
+          </NavLink>
+          <NavLink to="/kudos/new" className="nav-btn">
+            Enviar
+          </NavLink>
+          <NavLink to="/perfil" className="nav-btn">
+            Perfil
+          </NavLink>
+          {AUTH_ENABLED && <LogoutButton />}
+        </nav>
+      </header>
       <div className="page-content">
         <KudoNotifier />
         <Outlet />
       </div>
-      <nav className="bottom-bar" aria-label="Principal">
-        <div className="sidebar-logo">UCO Kudos</div>
-        <NavLink to="/inicio" className="nav-btn">
-          Inicio
-        </NavLink>
-        <NavLink to="/kudos/new" className="nav-btn">
-          + Nuevo Kudo
-        </NavLink>
-        <NavLink to="/kudos/received" className="nav-btn">
-          Recibidos
-        </NavLink>
-        <NavLink to="/kudos/sent" className="nav-btn">
-          Enviados
-        </NavLink>
-        <NavLink to="/perfil" className="nav-btn">
-          Perfil
-        </NavLink>
-        {AUTH_ENABLED && <LogoutButton />}
-      </nav>
     </div>
   )
 }
