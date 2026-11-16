@@ -84,6 +84,7 @@ export interface Profile {
 }
 
 export interface AttachmentInfo {
+  id: string
   name: string
   contentType: string
   size: number

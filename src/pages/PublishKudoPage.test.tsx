@@ -103,6 +103,24 @@ test('blocks more than five attachments without calling the publish API', async 
   expect(publishCalls(fetchMock)).toHaveLength(0)
 })
 
+test('lets the user remove a selected file before sending', async () => {
+  const fetchMock = mockApi(() => new Response(JSON.stringify({ id: 'k1', status: 'PUBLISHED', createdAt: 'now', notifications: [] }), { status: 201 }))
+  renderPage()
+  await fill()
+  const files = [
+    new File(['%PDF'], 'uno.pdf', { type: 'application/pdf' }),
+    new File(['%PDF'], 'dos.pdf', { type: 'application/pdf' }),
+  ]
+  fireEvent.change(screen.getByLabelText(/Adjuntos/), { target: { files } })
+
+  fireEvent.click(screen.getByRole('button', { name: 'Quitar uno.pdf' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar Kudo' }))
+
+  await waitFor(() => expect(publishCalls(fetchMock)).toHaveLength(1))
+  const body = publishCalls(fetchMock)[0][1]?.body as FormData
+  expect((body.getAll('files') as File[]).map((file) => file.name)).toEqual(['dos.pdf'])
+})
+
 test('reuses the idempotency key when the same submission is retried after an error', async () => {
   const fetchMock = mockApi(
     () => new Response(JSON.stringify({ code: 'kudo.scanner.unavailable', message: 'No se pudo analizar' }), { status: 503 }),

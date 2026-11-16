@@ -95,9 +95,25 @@ export default function PublishKudoPage() {
             type="file"
             multiple
             accept="image/*,application/pdf"
-            onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
+            onChange={(e) => {
+              const picked = Array.from(e.target.files ?? [])
+              setFiles((current) => [...current, ...picked])
+              e.target.value = ''
+            }}
           />
         </label>
+        {files.length > 0 && (
+          <ul className="attachments" aria-label="Archivos seleccionados">
+            {files.map((file, index) => (
+              <li key={`${file.name}-${index}`}>
+                {file.name}{' '}
+                <button type="button" onClick={() => setFiles((current) => current.filter((_, i) => i !== index))}>
+                  Quitar {file.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
         {error && <p role="alert">{error}</p>}
         <button type="submit" disabled={sending}>
           {sending ? 'Enviando...' : 'Enviar Kudo'}

@@ -1,5 +1,13 @@
-import { apiFetch } from './client'
-import type { Kudo, KudoDetail, ListKudosResponse, PublishKudoRequest, PublishKudoResponse } from './types'
+import { API_URL, ApiError, apiFetch, authHeaders } from './client'
+import type {
+  AttachmentInfo,
+  ErrorBody,
+  Kudo,
+  KudoDetail,
+  ListKudosResponse,
+  PublishKudoRequest,
+  PublishKudoResponse,
+} from './types'
 
 export function publishKudo(
   request: PublishKudoRequest,
@@ -17,7 +25,28 @@ export function publishKudo(
 
 }
 
-export type KudoType = 'SENT' | 'RECEIVED' | 'ALL'
+export async function downloadAttachment(kudoId: string, attachment: AttachmentInfo): Promise<void> {
+  let response: Response
+  try {
+    response = await fetch(`${API_URL}/api/v1/kudos/${kudoId}/attachments/${attachment.id}`, {
+      headers: await authHeaders(),
+    })
+  } catch {
+    throw new ApiError(0, 'network', 'No se pudo conectar con el servidor')
+  }
+  if (!response.ok) {
+    const body = (await response.json().catch(() => null)) as ErrorBody | null
+    throw new ApiError(response.status, body?.code ?? 'unknown', body?.message ?? 'No se pudo descargar el adjunto')
+  }
+  const url = URL.createObjectURL(await response.blob())
+  const link = document.createElement('a')
+  link.href = url
+  link.download = attachment.name
+  link.click()
+  URL.revokeObjectURL(url)
+}
+
+export type KudoType ='SENT' | 'RECEIVED' | 'ALL'
 
 export async function listKudos(type: KudoType, categoryId?: string): Promise<Kudo[]> {
   const params = new URLSearchParams({ type })
