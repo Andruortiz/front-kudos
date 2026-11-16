@@ -30,8 +30,8 @@ function fallbackMessage(status: number): string {
   return 'Ocurrió un error inesperado'
 }
 
-export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const headers = new Headers(init.headers)
+export async function authHeaders(base?: HeadersInit): Promise<Headers> {
+  const headers = new Headers(base)
   const token = await getToken()
   if (token) {
     headers.set('Authorization', `Bearer ${token}`)
@@ -40,6 +40,11 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
   if (import.meta.env.DEV && DEV_USER_ID) {
     headers.set('X-Dev-User', DEV_USER_ID)
   }
+  return headers
+}
+
+export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const headers = await authHeaders(init.headers)
   let response: Response
   try {
     response = await fetch(`${API_URL}${path}`, { ...init, headers })
