@@ -2,6 +2,26 @@
 
 Interfaz web de UCO Kudos: React, TypeScript y Vite, pensada primero para móvil.
 
+- **Sitio publicado:** https://kudos.ucokudos.qd.je
+- **API:** repositorio [UcoKudos](https://github.com/Andruortiz/UcoKudos), con la arquitectura completa del sistema.
+
+## Pantallas
+
+Las dos pantallas públicas.
+
+<p>
+  <img src="docs/imagenes/inicio-publico.jpg" alt="Inicio público de UCO Kudos" width="48%">
+  <img src="docs/imagenes/pedir-acceso.jpg" alt="Pantalla para pedir acceso" width="48%">
+</p>
+
+Con sesión iniciada: **Inicio**, **Recibidos**, **Enviados**, **Enviar** (con adjuntos, que se pueden quitar antes de enviar), **detalle de un Kudo** (con descarga de adjuntos) y **Perfil**, donde se registra y verifica el celular con un código por SMS. Sin el celular verificado no se pueden enviar Kudos.
+
+## Estructura
+
+![Diagrama de paquetes del front-end](docs/imagenes/diagrama-de-paquetes-front.svg)
+
+Las páginas conocen la API solo a través del paquete `api`. El diagrama también está como archivo [editable](docs/imagenes/diagrama-de-paquetes-front.drawio) para [diagrams.net](https://app.diagrams.net).
+
 ## Comandos
 
 ```bash
