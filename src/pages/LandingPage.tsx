@@ -13,10 +13,7 @@ export default function LandingPage() {
           </p>
           <div className="hero__actions">
             <Link className="btn btn-primary" to="/inicio">
-              Iniciar sesión
-            </Link>
-            <Link className="btn" to="/registro">
-              Registrarme
+              Entrar con Microsoft
             </Link>
           </div>
         </section>

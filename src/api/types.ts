@@ -102,15 +102,6 @@ export interface KudoDetail {
   attachments: AttachmentInfo[]
 }
 
-export type SelfRegistrationRole = "STUDENT" | "TEACHER"
-
-export interface RegistrationRequest {
-  name: string
-  email: string
-  phone: string
-  role: SelfRegistrationRole
-}
-
 export interface RegistrationResponse {
   id: string
   status: "PENDING" | "APPROVED" | "REJECTED"

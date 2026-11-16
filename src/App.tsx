@@ -6,13 +6,11 @@ import KudosListPage from './pages/KudosListPage'
 import LandingPage from './pages/LandingPage'
 import ProfilePage from './pages/ProfilePage'
 import PublishKudoPage from './pages/PublishKudoPage'
-import RegisterPage from './pages/RegisterPage'
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/registro" element={<RegisterPage />} />
       <Route element={<ProtectedLayout />}>
         <Route path="/inicio" element={<HomePage />} />
         <Route path="/kudos/new" element={<PublishKudoPage />} />
