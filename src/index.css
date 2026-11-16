@@ -542,3 +542,19 @@ a.brand {
   color: inherit;
   text-decoration: none;
 }
+
+.kudo-toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kudo-toast button {
+  background: none;
+  border: 0;
+  color: inherit;
+  font-size: 1.2rem;
+  cursor: pointer;
+}

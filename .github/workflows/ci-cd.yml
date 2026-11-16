@@ -17,7 +17,7 @@ env:
   VITE_API_URL: https://ca-ucokudos-api.calmmeadow-fd0780b8.centralus.azurecontainerapps.io
   VITE_ENTRA_TENANT_ID: 36f84d3d-a9fa-4302-8430-a675907c034d
   VITE_ENTRA_CLIENT_ID: 4acf7f6e-4bdc-4547-aa3f-2ebaa7cb48e6
-  SITE_URL: https://agreeable-sea-085bc7f10.6.azurestaticapps.net
+  SITE_URL: https://kudos.ucokudos.qd.je
 
 jobs:
   build:

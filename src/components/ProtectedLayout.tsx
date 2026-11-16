@@ -2,6 +2,7 @@ import { InteractionType } from '@azure/msal-browser'
 import { MsalAuthenticationTemplate } from '@azure/msal-react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { AUTH_ENABLED, LOGIN_SCOPES } from '../auth/msal'
+import KudoNotifier from './KudoNotifier'
 import LogoutButton from './LogoutButton'
 import SessionGate from './SessionGate'
 
@@ -9,6 +10,7 @@ function Shell() {
   return (
     <div className="app-layout">
       <div className="page-content">
+        <KudoNotifier />
         <Outlet />
       </div>
       <nav className="bottom-bar" aria-label="Principal">
