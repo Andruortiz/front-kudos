@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { ApiError } from '../api/client'
-import { getKudo } from '../api/kudos'
-import type { KudoDetail } from '../api/types'
+import { downloadAttachment, getKudo } from '../api/kudos'
+import type { AttachmentInfo, KudoDetail } from '../api/types'
 import Avatar from '../components/Avatar'
 
 function formatSize(bytes: number): string {
@@ -32,6 +32,13 @@ export default function KudoDetailPage() {
     }
   }, [id])
 
+  function download(attachment: AttachmentInfo) {
+    setError(null)
+    downloadAttachment(id, attachment).catch((e) =>
+      setError(e instanceof ApiError ? e.message : 'No se pudo descargar el adjunto'),
+    )
+  }
+
   return (
     <main>
       <h1>Kudo</h1>
@@ -57,8 +64,10 @@ export default function KudoDetailPage() {
           {kudo.attachments.length > 0 && (
             <ul className="attachments" aria-label="Adjuntos">
               {kudo.attachments.map((attachment) => (
-                <li key={attachment.name}>
-                  {attachment.name} ({formatSize(attachment.size)})
+                <li key={attachment.id}>
+                  <button type="button" className="link" onClick={() => download(attachment)}>
+                    {attachment.name} ({formatSize(attachment.size)})
+                  </button>
                 </li>
               ))}
             </ul>
