@@ -15,19 +15,11 @@ function renderAt(path: string) {
   )
 }
 
-test('the landing is public and offers to sign in or to register', () => {
+test('the landing is public and offers to sign in with Microsoft', () => {
   renderAt('/')
 
   expect(screen.getByRole('heading', { name: 'UCO Kudos' })).toBeInTheDocument()
-  expect(screen.getByRole('link', { name: 'Iniciar sesión' })).toHaveAttribute('href', '/inicio')
-  expect(screen.getByRole('link', { name: 'Registrarme' })).toHaveAttribute('href', '/registro')
-})
-
-test('the registration form is public', () => {
-  renderAt('/registro')
-
-  expect(screen.getByRole('heading', { name: 'Registrarme' })).toBeInTheDocument()
-  expect(screen.getByLabelText('Correo institucional')).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'Entrar con Microsoft' })).toHaveAttribute('href', '/inicio')
 })
 
 test('the home behind the login shows the navigation and the quick links', async () => {
