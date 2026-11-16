@@ -82,6 +82,7 @@ export default function ProfilePage() {
       {!profile && !error && <p>Cargando...</p>}
       {profile && (
         <>
+          {!profile.phoneVerified && <p className="notice">Verifica tu celular para poder enviar Kudos</p>}
           <p>Nombre: {profile.name}</p>
           <p>Correo: {profile.email}</p>
           <p>Rol: {roleLabel(profile.role)}</p>
