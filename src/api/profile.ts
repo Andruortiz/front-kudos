@@ -12,3 +12,15 @@ export function updatePhone(phone: string): Promise<Profile> {
         body: JSON.stringify({ phone }),
     })
 }
+
+export function requestPhoneCode(): Promise<void> {
+    return apiFetch<void>('/api/v1/me/phone/verification', { method: 'POST' })
+}
+
+export function confirmPhoneCode(code: string): Promise<Profile> {
+    return apiFetch<Profile>('/api/v1/me/phone/verification/confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+    })
+}

@@ -41,3 +41,47 @@ test('shows the server message when the phone is invalid', async () => {
 
   expect(await screen.findByRole('alert')).toHaveTextContent('formato internacional')
 })
+
+test('asks for the code, sends it and marks the phone as verified', async () => {
+  const unverified = { ...profile, phone: '+573001234567' }
+  const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+    if (String(url).endsWith('/phone/verification')) {
+      return new Response(null, { status: 204 })
+    }
+    if (String(url).endsWith('/phone/verification/confirm')) {
+      return new Response(JSON.stringify({ ...unverified, phoneVerified: true }), { status: 200 })
+    }
+    return new Response(JSON.stringify(unverified), { status: 200 })
+  })
+  render(<ProfilePage />)
+  await screen.findByText(/sin verificar/)
+
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar código de verificación' }))
+  fireEvent.change(await screen.findByLabelText('Código de 6 dígitos'), { target: { value: ' 123456 ' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Verificar celular' }))
+
+  expect(await screen.findByText('Celular verificado')).toBeInTheDocument()
+  expect(screen.getByText(/Celular: \+573001234567/)).toHaveTextContent('(verificado)')
+  const confirm = fetchMock.mock.calls.find(([url]) => String(url).endsWith('/confirm'))
+  expect(JSON.parse(String(confirm?.[1]?.body))).toEqual({ code: '123456' })
+})
+
+test('shows the server message when the code is wrong', async () => {
+  vi.spyOn(globalThis, 'fetch').mockImplementation(async (url) => {
+    if (String(url).endsWith('/phone/verification')) {
+      return new Response(null, { status: 204 })
+    }
+    if (String(url).endsWith('/confirm')) {
+      return new Response(JSON.stringify({ code: 'phone.code.invalid', message: 'El código no es correcto' }), { status: 422 })
+    }
+    return new Response(JSON.stringify({ ...profile, phone: '+573001234567' }), { status: 200 })
+  })
+  render(<ProfilePage />)
+  await screen.findByText(/sin verificar/)
+
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar código de verificación' }))
+  fireEvent.change(await screen.findByLabelText('Código de 6 dígitos'), { target: { value: '000000' } })
+  fireEvent.click(screen.getByRole('button', { name: 'Verificar celular' }))
+
+  expect(await screen.findByRole('alert')).toHaveTextContent('El código no es correcto')
+})

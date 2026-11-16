@@ -55,5 +55,8 @@ export async function apiFetch<T>(path: string, init: RequestInit = {}): Promise
     const body = (await response.json().catch(() => null)) as ErrorBody | null
     throw new ApiError(response.status, body?.code ?? 'unknown', body?.message ?? fallbackMessage(response.status))
   }
+  if (response.status === 204) {
+    return undefined as T
+  }
   return (await response.json()) as T
 }

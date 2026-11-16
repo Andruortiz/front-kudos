@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { ApiError } from '../api/client'
-import { getProfile, updatePhone } from '../api/profile'
+import { confirmPhoneCode, getProfile, requestPhoneCode, updatePhone } from '../api/profile'
 import type { Profile } from '../api/types'
 import { roleLabel } from '../kudos/roles'
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [phone, setPhone] = useState('')
+  const [code, setCode] = useState('')
+  const [codeSent, setCodeSent] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [saved, setSaved] = useState(false)
-  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
+  const [busy, setBusy] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -31,21 +33,47 @@ export default function ProfilePage() {
     }
   }, [])
 
-  async function submit(event: FormEvent) {
-    event.preventDefault()
+  async function run(action: () => Promise<void>, failure: string) {
     setError(null)
-    setSaved(false)
-    setSaving(true)
+    setMessage(null)
+    setBusy(true)
     try {
+      await action()
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : failure)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  function savePhone(event: FormEvent) {
+    event.preventDefault()
+    return run(async () => {
       const updated = await updatePhone(phone.trim())
       setProfile(updated)
       setPhone(updated.phone ?? '')
-      setSaved(true)
-    } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'No se pudo guardar el celular')
-    } finally {
-      setSaving(false)
-    }
+      setCodeSent(false)
+      setCode('')
+      setMessage('Celular actualizado')
+    }, 'No se pudo guardar el celular')
+  }
+
+  function sendCode() {
+    return run(async () => {
+      await requestPhoneCode()
+      setCodeSent(true)
+      setMessage('Te enviamos un código por SMS')
+    }, 'No se pudo enviar el código')
+  }
+
+  function confirmCode(event: FormEvent) {
+    event.preventDefault()
+    return run(async () => {
+      setProfile(await confirmPhoneCode(code.trim()))
+      setCodeSent(false)
+      setCode('')
+      setMessage('Celular verificado')
+    }, 'No se pudo verificar el código')
   }
 
   return (
@@ -61,7 +89,7 @@ export default function ProfilePage() {
             Celular: {profile.phone ?? 'Sin registrar'}
             {profile.phone && (profile.phoneVerified ? ' (verificado)' : ' (sin verificar)')}
           </p>
-          <form onSubmit={submit}>
+          <form onSubmit={savePhone}>
             <label>
               Celular (formato internacional)
               <input
@@ -72,14 +100,39 @@ export default function ProfilePage() {
                 required
               />
             </label>
-            <button type="submit" disabled={saving}>
-              {saving ? 'Guardando...' : 'Guardar celular'}
+            <button type="submit" disabled={busy}>
+              Guardar celular
             </button>
           </form>
+          {profile.phone && !profile.phoneVerified && (
+            <>
+              <button type="button" disabled={busy} onClick={sendCode}>
+                {codeSent ? 'Reenviar código' : 'Enviar código de verificación'}
+              </button>
+              {codeSent && (
+                <form onSubmit={confirmCode}>
+                  <label>
+                    Código de 6 dígitos
+                    <input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      maxLength={6}
+                      required
+                    />
+                  </label>
+                  <button type="submit" disabled={busy}>
+                    Verificar celular
+                  </button>
+                </form>
+              )}
+            </>
+          )}
         </>
       )}
       {error && <p role="alert">{error}</p>}
-      {saved && <p role="status">Celular actualizado</p>}
+      {message && <p role="status">{message}</p>}
     </main>
   )
 }
