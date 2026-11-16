@@ -106,3 +106,7 @@ export interface RegistrationResponse {
   id: string
   status: "PENDING" | "APPROVED" | "REJECTED"
 }
+
+export interface AccessResponse {
+  status: "INVITED" | "ALREADY_HAS_ACCESS"
+}

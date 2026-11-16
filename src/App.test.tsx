@@ -20,6 +20,7 @@ test('the landing is public and offers to sign in with Microsoft', () => {
 
   expect(screen.getByRole('heading', { name: 'UCO Kudos' })).toBeInTheDocument()
   expect(screen.getByRole('link', { name: 'Entrar con Microsoft' })).toHaveAttribute('href', '/inicio')
+  expect(screen.getByRole('link', { name: 'Pedir acceso' })).toHaveAttribute('href', '/acceso')
 })
 
 test('the home behind the login shows the navigation and the quick links', async () => {

@@ -15,6 +15,9 @@ export default function LandingPage() {
             <Link className="btn btn-primary" to="/inicio">
               Entrar con Microsoft
             </Link>
+            <Link className="btn" to="/acceso">
+              Pedir acceso
+            </Link>
           </div>
         </section>
         <section className="features" aria-label="Qué puedes hacer">
